@@ -5,6 +5,41 @@ from typing import TypedDict
 import requests
 from bs4 import BeautifulSoup
 
+#creating dataclass
+from dataclasses import dataclass
+
+@dataclass()
+class RankingData:
+    team: str
+    division: str
+    
+    record: str
+    record_num: float
+
+    rate_rank: int
+    rating: float
+
+    power_rank: int
+    power: float
+
+    offense_rank: int
+    offense: float
+
+    defense_rank: int
+    defense: float
+
+    home_field_advantage: float
+
+    strength_of_schedule: float #played games only
+    sub_sos: float
+
+    strength_of_future_schedule: float #including future games
+    sub_sofs: float
+
+    expected_wins: float #for remainder of schedule
+    expected_losses: float #for remainder of schedule
+
+
 massey_base = 'https://masseyratings.com' 
 url = 'https://masseyratings.com/cf/fbs/ratings'
 
@@ -71,7 +106,7 @@ def process_json(json, stamp):
         ri = json['RI']
         if 'length' in ri:
             hasRI = 1
-    
+    # print(ci)
     di = json['DI']
     # print('ci', ci)
     # print('di', di)
@@ -109,6 +144,15 @@ def post_processing(data):
         element[1] = element[1][0]
     return data
 
+def dataclass_conversion(data):
+    dataclass_data = []
+    for element in data:
+        print(element)
+        dataclass_data.append(RankingData(*element))
+    return dataclass_data
+
+
+
 if __name__ == '__main__':
     #get page source
     source = get_page_source(url)
@@ -126,6 +170,8 @@ if __name__ == '__main__':
     #process json
     data = process_json(response_json, stamp_processed)
     data_processed = post_processing(data)
+    #store in dataclass
+    dataclass_data = dataclass_conversion(data_processed)
 
 
 
