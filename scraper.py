@@ -100,17 +100,12 @@ def get_json(jsonURL):
 
 def process_json(json, stamp):
     ti = json['TI']
-    # print(ti)
     ci = json['CI']
     if 'RI' in json:
         ri = json['RI']
         if 'length' in ri:
             hasRI = 1
-    # print(ci)
     di = json['DI']
-    # print('ci', ci)
-    # print('di', di)
-    # print('ri', ri)
     if stamp['jsoptions'] & 4 and len(di) > 0: 
         referenceValue = int(stamp['obfu'][32:]) #obfu last three digits
         for i in range(len(ci)):
@@ -147,7 +142,6 @@ def post_processing(data):
 def dataclass_conversion(data):
     dataclass_data = []
     for element in data:
-        print(element)
         dataclass_data.append(RankingData(*element))
     return dataclass_data
 
@@ -167,9 +161,11 @@ if __name__ == '__main__':
 
     #get json
     response_json = get_json(full_url)
+
     #process json
     data = process_json(response_json, stamp_processed)
     data_processed = post_processing(data)
+
     #store in dataclass
     dataclass_data = dataclass_conversion(data_processed)
 
